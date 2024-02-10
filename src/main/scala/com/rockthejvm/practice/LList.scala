@@ -143,7 +143,6 @@ case class Cons[A](override val head: A, override val tail: LList[A]) extends LL
    */
   override def foldLeft[B](start: B)(operator: (B, A) => B) =
     tail.foldLeft(operator(start, head))(operator)
-
 }
 
 /**
@@ -169,6 +168,24 @@ object LList {
     if (list.isEmpty) throw new NoSuchElementException
     else if (predicate(list.head)) list.head
     else find(list.tail, predicate)
+  }
+
+  def range(from: Int, to: Int): LList[Int] = {
+    @tailrec
+    def rangeHelper(from: Int, to: Int, acc: LList[Int]): LList[Int] =
+      if (to < from) {
+        acc
+      } else {
+        rangeHelper(from, to - 1, Cons(to, acc))
+      }
+
+    rangeHelper(from, to, Empty())
+  }
+
+  def demonstrateStackOverflow(): Unit = {
+    val longRange = LList.range(1, 1000 * 1000)
+    println("longRange created")
+    longRange.map(x => 2 * x)
   }
 }
 
